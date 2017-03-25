@@ -7,9 +7,8 @@ UPLOAD_FOLDER='guisheng_pics'
 ALLOWED_EXTENSIONS=set(['png','jpg','jpeg','svg'])
 
 app = Flask(__name__)
-
-@app.route('/guisheng/upload_pics/',methods = ['GET','POST'])
-def upload_pic():
+@app.route('/guisheng/upload_pics/',methods = ['POST'])
+def upload_pics():
     if request.method == 'POST':
         file = request.files['file']
         if file and ('.' in file.filename and file.filename.split('.',1)[1] in ALLOWED_EXTENSIONS):
@@ -19,6 +18,14 @@ def upload_pic():
         return jsonify({
             'pic_url':pic_url
         })
+
+@app.route('/guisheng/delete_pics/',methods = ['POST'])
+def delete_pics():
+    if request.method == 'POST':
+        img_url = request.get_json().get('img_url')
+        filename = img_url.split('/')[-1]
+        os.remove(os.path.join(UPLOAD_FOLDER,filename))
+        return jsonify({'filename':filename}),200
 
 @app.route('/guisheng_pics/<filename>/',methods = ['GET','POST'])
 def uploaded_file(filename):
