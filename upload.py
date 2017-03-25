@@ -7,6 +7,7 @@ UPLOAD_FOLDER='guisheng_pics'
 ALLOWED_EXTENSIONS=set(['png','jpg','jpeg','svg'])
 
 app = Flask(__name__)
+
 @app.route('/guisheng/upload_pics/',methods = ['GET','POST'])
 def upload_pic():
     if request.method == 'POST':
