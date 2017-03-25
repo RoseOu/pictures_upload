@@ -11,7 +11,7 @@ app = Flask(__name__)
 def upload_pics():
     if request.method == 'POST':
         file = request.files['file']
-        if file:#and ('.' in filename and filename.split('.',1)[1] in ALLOWED_EXTENSIONS):
+        if file and ('.' in file.filename and file.filename.split('.',1)[1] in ALLOWED_EXTENSIONS):
             fname = '.'.join([str(int(time.time())),file.filename.split('.',1)[1]])
             file.save(os.path.join(UPLOAD_FOLDER,fname))
             pic_url = os.path.join('http://120.24.4.254:7777/',UPLOAD_FOLDER,fname)
