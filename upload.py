@@ -22,8 +22,8 @@ def upload_pics():
 @app.route('/guisheng/delete_pics/',methods = ['POST'])
 def delete_pics():
     if request.method == 'POST':
-        img_url = request.get_json().get('img_url')
-        filename = img_url.split('/')[-1]
+        pic_url = request.get_json().get('pic_url')
+        filename = pic_url.split('/')[-1]
         os.remove(os.path.join(UPLOAD_FOLDER,filename))
         return jsonify({'filename':filename}),200
 
