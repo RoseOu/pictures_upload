@@ -2,11 +2,19 @@
 import os
 from flask import Flask, request, send_from_directory,jsonify
 import time
+from qiniu import Auth, put_file, etag
+import qiniu.config
 
 UPLOAD_FOLDER='guisheng_pics'
 ALLOWED_EXTENSIONS=set(['png','jpg','jpeg','svg'])
+ACCESS_KEY = os.environ.get("ACCESS_KEY")
+SECRET_KEY = os.environ.get("SECRET_KEY")
+BUCKET_NAME = 'guisheng'
+
+q = Auth(ACCESS_KEY, SECRET_KEY)
 
 app = Flask(__name__)
+
 @app.route('/guisheng/upload_pics/',methods = ['POST'])
 def upload_pics():
     if request.method == 'POST':
@@ -14,7 +22,12 @@ def upload_pics():
         if file and ('.' in file.filename and file.filename.split('.',1)[1] in ALLOWED_EXTENSIONS):
             fname = '.'.join([str(int(time.time())),file.filename.split('.',1)[1]])
             file.save(os.path.join(UPLOAD_FOLDER,fname))
-            pic_url = os.path.join('http://120.24.4.254:7777/',UPLOAD_FOLDER,fname)
+            localfile = ''.join([UPLOAD_FOLDER,'/',fname])
+            key = '.'.join([str(int(time.time())),file.filename.split('.',1)[1]])
+            token = q.upload_token(BUCKET_NAME, key, 3600)
+            ret, info = put_file(token, key, localfile)
+            pic_url = "".join(["http://ouno0zh2y.bkt.clouddn.com/",key])
+            os.remove(os.path.join(UPLOAD_FOLDER,fname))
         return jsonify({
             'pic_url':pic_url
         })
@@ -33,5 +46,5 @@ def uploaded_file(filename):
 
 if __name__ == '__main__':
     app.debug = True
-    app.run(host='0.0.0.0',port=5431)
+    app.run(host='0.0.0.0',port=7777)
 
