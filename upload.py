@@ -28,9 +28,9 @@ def upload_pics():
             ret, info = put_file(token, key, localfile)
             pic_url = "".join(["http://ouno0zh2y.bkt.clouddn.com/",key])
             os.remove(os.path.join(UPLOAD_FOLDER,fname))
-        return jsonify({
-            'pic_url':pic_url
-        })
+            return jsonify({
+                'pic_url':pic_url
+            })
 
 @app.route('/guisheng/delete_pics/',methods = ['POST'])
 def delete_pics():
